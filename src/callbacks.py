@@ -22,8 +22,17 @@ def register_callbacks(app):
             return {}, {}
 
         #another random color sequence
-        pie_colors = ["#f3c6ff", "#e100ff", "#b300cc", "#8000aa", "#5e0099", "#3a0066"]
+        pie_colors = [
+            "#d9d9d9",  # light grey
+            "#f4a6a6",  # pale rose
+            "#e06666",  # soft red
+            "#cc3c3c",  # mid red
+            "#a31515",  # strong red
+            "#7e1416"   # velvet/dark red
+        ]
 
+
+        
         # PIE: Different attack types
         pie_data = filtered.groupby('attacktype1_txt').size().reset_index(name='count')
         pie_fig = px.pie(pie_data, names='attacktype1_txt', values='count',
@@ -32,8 +41,8 @@ def register_callbacks(app):
 
         #black background
         pie_fig.update_layout(
-        paper_bgcolor='#000000',
-        plot_bgcolor='#000000',
+        paper_bgcolor='#3a3a3f',
+        plot_bgcolor='#3a3a3f',
         font_color='white'
     )
 
@@ -41,11 +50,11 @@ def register_callbacks(app):
         bar_data = filtered.groupby('iyear').size().reset_index(name='count')
         bar_fig = px.bar(bar_data, x='iyear', y='count',
                          title=f"Attacks per Year in {country}",
-                         color_discrete_sequence=["#e100ff"])
-
+                         color_discrete_sequence=["#7e1416"])
+        
         bar_fig.update_layout(
-        paper_bgcolor='#000000',
-        plot_bgcolor='#000000',
+        paper_bgcolor='#3a3a3f',
+        plot_bgcolor='#3a3a3f',
         font_color='white'
     )
 
