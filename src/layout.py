@@ -1,9 +1,13 @@
 import plotly.express as px
 from dash import html, dcc
-from src.data_loader import prepare_data
+from src.data_loader import prepare_data, download_data
+from src.constants import FOLDER_PATH, FILE_NAME, FILE_PATH
+
+# Download data
+download_data(FOLDER_PATH, FILE_NAME)
 
 # Daten vorbereiten
-df = prepare_data()
+df = prepare_data(FILE_PATH)
 
 # Angriffe pro Land zählen
 country_counts = df.groupby("country_txt").size().reset_index(name="attack_count")
@@ -57,7 +61,7 @@ layout = html.Div([
     html.H1("Global Terrorism Dashboard", style={'color': 'white'}),
 
     dcc.Graph(id='world-map', figure=map_fig, style={'height': '80vh'}),
-    
+
     html.Div([
         dcc.Graph(id='bar-chart', style={'width': '50%', 'display': 'inline-block'}),
         dcc.Graph(id='pie-chart', style={'width': '50%', 'display': 'inline-block'})
@@ -68,4 +72,3 @@ style={
     'padding': '20px',
     'minHeight': '100vh'
 })
-

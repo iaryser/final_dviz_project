@@ -1,4 +1,3 @@
-``make
 run:
 	python app.py
 
