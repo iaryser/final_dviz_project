@@ -1,13 +1,15 @@
 import plotly.express as px
 from dash import html, dcc
 from src.data_loader import prepare_data, download_data
-from src.constants import FOLDER_PATH, FILE_NAME, FILE_PATH
+from src.config import *
 
 # Download data
 download_data(FOLDER_PATH, FILE_NAME)
 
 # Daten vorbereiten
 df = prepare_data(FILE_PATH)
+
+target_types = [{'label': x, 'value': x} for x in sorted(df['targtype1_txt'].dropna().unique())]
 
 # Angriffe pro Land zählen
 country_counts = df.groupby("country_txt").size().reset_index(name="attack_count")
@@ -76,10 +78,19 @@ map_fig.update_layout(
 # Layout Dash
 layout = html.Div([
     html.H1("Global Terrorism Dashboard", style={'color': 'white'}),
-    dcc.Graph(id='world-map', figure=map_fig, style={'height': '80vh'}),
+    dcc.Graph(id=MAP_ID, figure=map_fig, style={'height': '80vh'}),
     html.Div([
-        dcc.Graph(id='bar-chart', style={'width': '50%', 'display': 'inline-block'}),
-        dcc.Graph(id='pie-chart', style={'width': '50%', 'display': 'inline-block'})
+        html.Label("Select Target Type:"),
+        dcc.Dropdown(
+            id=TARGET_TYPE_DROPDOWN_ID,
+            options=target_types,
+            value=None,
+            clearable=True
+        )
+    ], style={'width': '40%', 'marginBottom': '20px'}),
+    html.Div([
+        dcc.Graph(id=BAR_CHART_ID, style={'width': '50%', 'display': 'inline-block'}),
+        dcc.Graph(id=PIE_CHART_ID, style={'width': '50%', 'display': 'inline-block'})
     ], style={'display': 'flex'})
 ], style={
     'backgroundColor': '#3a3a3f',

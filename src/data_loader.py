@@ -18,8 +18,6 @@ def download_data(folder_path, file_name):
     with zipfile.ZipFile(io.BytesIO(response.content)) as zip_ref:
         zip_ref.extractall(folder_path)
 
-# ="../data/global_terrorism_dataset.csv"
-
 def prepare_data(filepath):
     df = pd.read_csv(filepath, encoding="latin1")
 
