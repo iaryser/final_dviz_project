@@ -89,10 +89,10 @@ map_config = {
 # Layout Dash
 layout = html.Div([
     html.H1("Global Terrorism Dashboard", style={'color': 'white'}),
-    dcc.Graph(id=MAP_ID, figure=map_fig, style={'height': '80vh'}),
-    
+    dcc.Graph(id=MAP_ID, figure=map_fig, style={'height': '80vh'}, config=map_config),
+
     html.Div([
-        html.Label("Select Target Type:", 
+        html.Label("Select Target Type:",
                    style={
                        'color': 'white',
                        'fontSize': '20px',
@@ -119,4 +119,3 @@ layout = html.Div([
     'padding': '20px',
     'minHeight': '100vh'
 })
-
