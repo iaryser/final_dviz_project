@@ -50,6 +50,8 @@ def register_callbacks(app):
             color_discrete_sequence=pie_colors[::-1]
         )
 
+        pie_fig.update_traces(hovertemplate='%{label}<br>%{value:,.0f}<extra></extra>')
+
         # black background
         pie_fig.update_layout(
             paper_bgcolor='#3a3a3f',
@@ -67,6 +69,8 @@ def register_callbacks(app):
             title=f"Attacks per Year in {country}",
             color_discrete_sequence=["#7e1416"]
         )
+
+        bar_fig.update_traces(hovertemplate='%{label}<br>%{value:,.0f}<extra></extra>')
 
         bar_fig.update_layout(
             paper_bgcolor='#3a3a3f',
