@@ -28,22 +28,26 @@ def register_callbacks(app):
         # another random color sequence
         pie_colors = [
             "#d9d9d9",  # light grey
+            "#fbeaea",  # very pale pink
+            "#f4c6c6",  # blush pink
             "#f4a6a6",  # pale rose
             "#e06666",  # soft red
+            "#d24c4c",  # mid soft red
             "#cc3c3c",  # mid red
             "#a31515",  # strong red
             "#7e1416"   # velvet/dark red
         ]
 
         # PIE: Different attack types
-        pie_data = filtered_df.groupby(
-            'attacktype1_txt').size().reset_index(name='count')
+        pie_data = filtered_df.groupby('attacktype1_txt').size().reset_index(name='count')
+        pie_data = pie_data.sort_values(by='count', ascending=False).reset_index(drop=True)
+
         pie_fig = px.pie(
             pie_data,
             names='attacktype1_txt',
             values='count',
             title=f"Attack Types in {country}",
-            color_discrete_sequence=pie_colors
+            color_discrete_sequence=pie_colors[::-1]
         )
 
         # black background
