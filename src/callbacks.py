@@ -7,6 +7,24 @@ df = prepare_data(FILE_PATH)
 
 def register_callbacks(app):
     @app.callback(
+        Output(TARGET_TYPE_DROPDOWN_ID, 'options'),
+        Output(TARGET_TYPE_DROPDOWN_ID, 'value'),
+        Input(MAP_ID, 'clickData')
+    )
+    def update_target_type_dropdown(clickData):
+        if clickData:
+            country = clickData['points'][0]['location']
+            filtered_df = df[df['country_txt'] == country]
+        else:
+            filtered_df = df
+
+        available_types = filtered_df['targtype1_txt'].dropna().unique()
+
+        options = [{'label': t, 'value': t} for t in sorted(available_types)]
+
+        return options, None
+
+    @app.callback(
         Output(PIE_CHART_ID, 'figure'),
         Output(BAR_CHART_ID, 'figure'),
         Input(TARGET_TYPE_DROPDOWN_ID, 'value'),

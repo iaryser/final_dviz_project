@@ -9,8 +9,8 @@ download_data(FOLDER_PATH, FILE_NAME)
 # Daten vorbereiten
 df = prepare_data(FILE_PATH)
 
-target_types = [{'label': x, 'value': x}
-                for x in sorted(df['targtype1_txt'].dropna().unique())]
+""" target_types = [{'label': x, 'value': x}
+                for x in sorted(df['targtype1_txt'].dropna().unique())] """
 
 # Angriffe pro Land zählen
 country_counts = df.groupby(
@@ -100,7 +100,7 @@ layout = html.Div([
                    }),
         dcc.Dropdown(
             id=TARGET_TYPE_DROPDOWN_ID,
-            options=target_types,
+            options=[],
             value=None,
             clearable=True,
             style={  #styling the dropdown but to further refine well have to create an assets folder with custom css stuff: assets/custom.css
