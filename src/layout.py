@@ -1,3 +1,4 @@
+import pandas as pd
 import plotly.express as px
 from dash import html, dcc
 from src.data_loader import prepare_data, download_data
@@ -9,32 +10,38 @@ download_data(FOLDER_PATH, FILE_NAME)
 # Daten vorbereiten
 df = prepare_data(FILE_PATH)
 
-""" target_types = [{'label': x, 'value': x}
-                for x in sorted(df['targtype1_txt'].dropna().unique())] """
-
 # Angriffe pro Land zählen
 country_counts = df.groupby(
     "country_txt").size().reset_index(name="attack_count")
 
-#custom colorscale bc default ones suck
-custom_colorscale = [
-    [0.0, "#d9d9d9"],   # light grey
-    [0.15, "#f4a6a6"],  # pale rose
-    [0.3, "#e06666"],   # soft red
-    [0.5, "#cc3c3c"],   # mid red
-    [0.7, "#a31515"],   # intense red
-    [1.0, "#7e1416"]    # velvet/dark red
-]
+#bin attack count into six categories
+max_attacks = country_counts['attack_count'].max()
+bins=[0, 250, 1215, 2743, 5235, 8306, max_attacks]
+labels=['0-250', '251-1215', '1216-2743', '2744-5235', '5236-8306', '8307+' ]
+
+country_counts['attack_bin'] = pd.cut(
+    country_counts['attack_count'],
+    bins=bins,
+    labels=labels,
+    include_lowest=True
+)
+
+#map each label to desired colorscale
+hex_colors = ["#d9d9d9","#f4a6a6","#e06666","#cc3c3c","#a31515","#7e1416"]
+color_map  = dict(zip(labels, hex_colors))
+
 
 # Create map
 map_fig = px.choropleth(
     country_counts,
     locations="country_txt",
     locationmode="country names",
-    color="attack_count",
-    color_continuous_scale=custom_colorscale,
+    color="attack_bin",
+    color_discrete_map=color_map,
+    category_orders={'attack_bin': labels},
+    labels={'attack_bin': 'Attack Range'},
     title="Global Terrorist attacks",
-    range_color=[0, 5000]
+    custom_data=['attack_count']
 )
 
 map_fig.update_coloraxes(colorbar_title="Number of Attacks")
@@ -49,7 +56,7 @@ map_fig.update_geos(
 map_fig.update_traces(
     hovertemplate=(
         "<b>%{location}</b><br>"
-        "Attacks: %{z:,}<br>"
+        "Attacks: %{customdata[0]:,}<br>"
         "<extra></extra>"
     )
 )
