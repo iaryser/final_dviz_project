@@ -14,8 +14,7 @@ target_types = [{'label': x, 'value': x} for x in sorted(df['targtype1_txt'].dro
 # Angriffe pro Land zählen
 country_counts = df.groupby("country_txt").size().reset_index(name="attack_count")
 
-
-#own colorscale bc default ones suck (this still sucks)
+#custom colorscale bc default ones suck
 custom_colorscale = [
     [0.0, "#d9d9d9"],   # light grey
     [0.15, "#f4a6a6"],  # pale rose
@@ -79,15 +78,26 @@ map_fig.update_layout(
 layout = html.Div([
     html.H1("Global Terrorism Dashboard", style={'color': 'white'}),
     dcc.Graph(id=MAP_ID, figure=map_fig, style={'height': '80vh'}),
+    
     html.Div([
-        html.Label("Select Target Type:"),
+        html.Label("Select Target Type:", 
+                   style={
+                       'color': 'white',
+                       'fontSize': '20px',
+                       'fontWeight': 'bold'
+                   }),
         dcc.Dropdown(
             id=TARGET_TYPE_DROPDOWN_ID,
             options=target_types,
             value=None,
-            clearable=True
+            clearable=True,
+            style={  #styling the dropdown but to further refine well have to create an assets folder with custom css stuff: assets/custom.css
+                'backgroundColor': '#4c4c53',
+                'color': 'black'
+            }
         )
-    ], style={'width': '40%', 'marginBottom': '20px'}),
+    ], style={'width': '40%', 'marginBottom': '20px'}),  # moved here
+
     html.Div([
         dcc.Graph(id=BAR_CHART_ID, style={'width': '50%', 'display': 'inline-block'}),
         dcc.Graph(id=PIE_CHART_ID, style={'width': '50%', 'display': 'inline-block'})
@@ -97,3 +107,4 @@ layout = html.Div([
     'padding': '20px',
     'minHeight': '100vh'
 })
+
