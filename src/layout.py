@@ -83,6 +83,18 @@ map_fig.update_layout(
     font_color='white'
 )
 
+map_fig.update_layout(
+    legend=dict(
+        title=dict(text="Attack Range", font=dict(size=18)),
+        font=dict(size=14),
+        itemwidth=50,
+        yanchor="top",
+        y=1,
+        xanchor="left",
+        x=1.02
+    )
+)
+
 map_config = {
     'displayModeBar': True,
     'modeBarButtonsToRemove': [
