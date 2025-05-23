@@ -9,13 +9,14 @@ download_data(FOLDER_PATH, FILE_NAME)
 # Daten vorbereiten
 df = prepare_data(FILE_PATH)
 
-target_types = [{'label': x, 'value': x} for x in sorted(df['targtype1_txt'].dropna().unique())]
+target_types = [{'label': x, 'value': x}
+                for x in sorted(df['targtype1_txt'].dropna().unique())]
 
 # Angriffe pro Land zählen
-country_counts = df.groupby("country_txt").size().reset_index(name="attack_count")
+country_counts = df.groupby(
+    "country_txt").size().reset_index(name="attack_count")
 
-
-#own colorscale bc default ones suck (this still sucks)
+# own colorscale bc default ones suck (this still sucks)
 custom_colorscale = [
     [0.0, "#d9d9d9"],   # light grey
     [0.15, "#f4a6a6"],  # pale rose
@@ -24,7 +25,6 @@ custom_colorscale = [
     [0.7, "#a31515"],   # intense red
     [1.0, "#7e1416"]    # velvet/dark red
 ]
-
 
 # Create map
 map_fig = px.choropleth(
@@ -37,6 +37,7 @@ map_fig = px.choropleth(
     range_color=[0, 5000]
 )
 
+map_fig.update_coloraxes(colorbar_title="Number of Attacks")
 
 # Geo-Settings
 map_fig.update_geos(
@@ -75,10 +76,21 @@ map_fig.update_layout(
     font_color='white'
 )
 
+map_config = {
+    'displayModeBar': True,
+    'modeBarButtonsToRemove': [
+        'zoom2d', 'pan2d', 'select2d', 'lasso2d', 'zoomIn2d',
+        'zoomOut2d', 'autoScale2d', 'hoverClosestGeo',
+        'hoverClosestCartesian', 'hoverCompareCartesian', 'toImage'
+    ],
+    'displaylogo': False
+}
+
 # Layout Dash
 layout = html.Div([
     html.H1("Global Terrorism Dashboard", style={'color': 'white'}),
-    dcc.Graph(id=MAP_ID, figure=map_fig, style={'height': '80vh'}),
+    dcc.Graph(id=MAP_ID, figure=map_fig, style={
+              'height': '80vh'}, config=map_config),
     html.Div([
         html.Label("Select Target Type:"),
         dcc.Dropdown(
@@ -89,8 +101,8 @@ layout = html.Div([
         )
     ], style={'width': '40%', 'marginBottom': '20px'}),
     html.Div([
-        dcc.Graph(id=BAR_CHART_ID, style={'width': '50%', 'display': 'inline-block'}),
-        dcc.Graph(id=PIE_CHART_ID, style={'width': '50%', 'display': 'inline-block'})
+        dcc.Graph(id=BAR_CHART_ID, style={ 'width': '50%', 'display': 'inline-block' }, config={"displayModeBar": False}),
+        dcc.Graph(id=PIE_CHART_ID, style={ 'width': '50%', 'display': 'inline-block' }, config={"displayModeBar": False})
     ], style={'display': 'flex'})
 ], style={
     'backgroundColor': '#3a3a3f',
