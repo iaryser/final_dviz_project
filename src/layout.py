@@ -17,7 +17,7 @@ country_counts = df.groupby(
 #bin attack count into six categories
 max_attacks = country_counts['attack_count'].max()
 bins=[0, 250, 1215, 2743, 5235, 8306, max_attacks]
-labels=['0-250', '251-1215', '1216-2743', '2744-5235', '5236-8306', '8307+' ]
+labels=['1-250', '251-1215', '1216-2743', '2744-5235', '5236-8306', '8307+' ]
 
 country_counts['attack_bin'] = pd.cut(
     country_counts['attack_count'],
@@ -40,7 +40,6 @@ map_fig = px.choropleth(
     color_discrete_map=color_map,
     category_orders={'attack_bin': labels},
     labels={'attack_bin': 'Attack Range'},
-    title="Global Terrorist attacks",
     custom_data=['attack_count']
 )
 
@@ -48,8 +47,8 @@ map_fig.update_coloraxes(colorbar_title="Number of Attacks")
 
 # Geo-Settings
 map_fig.update_geos(
-    showframe=False,
-    showcoastlines=False
+    showframe=True,
+    showcoastlines=True
 )
 
 # Dark Design & Tooltyp styling
@@ -75,12 +74,12 @@ map_fig.update_layout(
         bgcolor="rgba(50,50,50,0.8)",
         font_size=13,
         font_family="Arial, sans-serif",
-        font_color="white",
+        font_color="#d9d9d9",
         bordercolor="#666"
     ),
     paper_bgcolor='#3a3a3f',
     plot_bgcolor='#3a3a3f',
-    font_color='white'
+    font_color='#d9d9d9'
 )
 
 map_fig.update_layout(
@@ -107,13 +106,23 @@ map_config = {
 
 # Layout Dash
 layout = html.Div([
-    html.H1("Global Terrorism Dashboard", style={'color': 'white'}),
+    html.H1("Global Terrorism Dashboard", style={'color': '#d9d9d9'}),
+    
+    html.P("Select a country on the map to view yearly and categorical breakdowns of attacks.",
+    style={
+        "color": "#d9d9d9",
+        "fontSize": "20px",
+        "marginTop": "-10px",
+        "marginBottom": "20px",
+        "fontFamily": "Arial, sans-serif"
+    }),
+    
     dcc.Graph(id=MAP_ID, figure=map_fig, style={'height': '80vh'}, config=map_config),
 
     html.Div([
         html.Label("Select Target Type:",
                    style={
-                       'color': 'white',
+                       'color': '#d9d9d9',
                        'fontSize': '20px',
                        'fontWeight': 'bold'
                    }),

@@ -74,8 +74,12 @@ def register_callbacks(app):
         pie_fig.update_layout(
             paper_bgcolor='#3a3a3f',
             plot_bgcolor='#3a3a3f',
-            font_color='white'
-        )
+            font_color='white',
+            title_font=dict(
+            size=18,
+            color='#d9d9d9',
+            family='Arial, sans-serif'
+            ))
 
         # BAR: Number of attacks per year
         bar_data = filtered_df.groupby(
@@ -93,7 +97,11 @@ def register_callbacks(app):
         bar_fig.update_layout(
             paper_bgcolor='#3a3a3f',
             plot_bgcolor='#3a3a3f',
-            font_color='white'
-        )
+            font_color='white',
+            title_font=dict(
+            size=18,
+            color='#d9d9d9',
+            family='Arial, sans-serif'
+        ))
 
         return pie_fig, bar_fig
