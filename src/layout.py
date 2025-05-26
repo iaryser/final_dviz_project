@@ -16,8 +16,8 @@ country_counts = df.groupby(
 
 #bin attack count into six categories
 max_attacks = country_counts['attack_count'].max()
-bins=[0, 250, 1215, 2743, 5235, 8306, max_attacks]
-labels=['1-250', '251-1215', '1216-2743', '2744-5235', '5236-8306', '8307+' ]
+bins = [0, 250, 1215, 2743, 5235, 8306, max_attacks]
+labels = ['0-250', '251-1215', '1216-2743', '2744-5235', '5236-8306', '8307+']
 
 country_counts['attack_bin'] = pd.cut(
     country_counts['attack_count'],
@@ -26,10 +26,9 @@ country_counts['attack_bin'] = pd.cut(
     include_lowest=True
 )
 
-#map each label to desired colorscale
-hex_colors = ["#d9d9d9","#f4a6a6","#e06666","#cc3c3c","#a31515","#7e1416"]
-color_map  = dict(zip(labels, hex_colors))
-
+# map each label to desired colorscale
+hex_colors = ["#d9d9d9", "#f4a6a6", "#e06666", "#cc3c3c", "#a31515", "#7e1416"]
+color_map = dict(zip(labels, hex_colors))
 
 # Create map
 map_fig = px.choropleth(
@@ -94,7 +93,7 @@ map_fig.update_layout(
     )
 )
 
-map_config = {
+modeBar_config = {
     'displayModeBar': True,
     'modeBarButtonsToRemove': [
         'zoom2d', 'pan2d', 'select2d', 'lasso2d', 'zoomIn2d',
@@ -106,18 +105,8 @@ map_config = {
 
 # Layout Dash
 layout = html.Div([
-    html.H1("Global Terrorism Dashboard", style={'color': '#d9d9d9'}),
-    
-    html.P("Select a country on the map to view yearly and categorical breakdowns of attacks.",
-    style={
-        "color": "#d9d9d9",
-        "fontSize": "20px",
-        "marginTop": "-10px",
-        "marginBottom": "20px",
-        "fontFamily": "Arial, sans-serif"
-    }),
-    
-    dcc.Graph(id=MAP_ID, figure=map_fig, style={'height': '80vh'}, config=map_config),
+    html.H1("Global Terrorism Dashboard", style={'color': 'white'}),
+    dcc.Graph(id=MAP_ID, figure=map_fig, style={'height': '80vh'}, config=modeBar_config),
 
     html.Div([
         html.Label("Select Target Type:",
@@ -131,7 +120,8 @@ layout = html.Div([
             options=[],
             value=None,
             clearable=True,
-            style={  #styling the dropdown but to further refine well have to create an assets folder with custom css stuff: assets/custom.css
+            style={
+                #styling the dropdown but to further refine well have to create an assets folder with custom css stuff: assets/custom.css
                 'backgroundColor': '#4c4c53',
                 'color': 'black'
             }
@@ -139,8 +129,8 @@ layout = html.Div([
     ], style={'width': '40%', 'marginBottom': '20px'}),  # moved here
 
     html.Div([
-        dcc.Graph(id=BAR_CHART_ID, style={ 'width': '50%', 'display': 'inline-block' }, config={"displayModeBar": False}),
-        dcc.Graph(id=PIE_CHART_ID, style={ 'width': '50%', 'display': 'inline-block' }, config={"displayModeBar": False})
+        dcc.Graph(id=BAR_CHART_ID, style={'width': '50%', 'display': 'inline-block'}, config=modeBar_config),
+        dcc.Graph(id=PIE_CHART_ID, style={'width': '50%', 'display': 'inline-block'}, config={"displayModeBar": False})
     ], style={'display': 'flex'})
 ], style={
     'backgroundColor': '#3a3a3f',

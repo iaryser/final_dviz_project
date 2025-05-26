@@ -41,3 +41,14 @@ def prepare_data(filepath):
     df['casualties'] = df['nkill'] + df['nwound']
 
     return df
+
+def calc_other_row_for_pie(data, threshold):
+    large = data[data['percentage'] >= threshold]
+    small = data[data['percentage'] < threshold]
+
+    other_row = pd.DataFrame([{
+        'attacktype1_txt': 'Other',
+        'count': small['count'].sum()
+    }])
+
+    return pd.concat([large[['attacktype1_txt', 'count']], other_row], ignore_index=True)
