@@ -6,6 +6,7 @@ FILE_PATH: Final = f"{FOLDER_PATH}/{FILE_NAME}"
 
 # Component id's
 TARGET_TYPE_DROPDOWN_ID: Final = "target-type-dropdown"
-PIE_CHART_ID: Final = 'pie-chart'
+ATTACK_TYPE_DROPDOWN_ID: Final = "attack-type-dropdown"
+DONUT_CHART_ID: Final = 'donut-chart'
 BAR_CHART_ID: Final = 'bar-chart'
 MAP_ID: Final = 'world-map'

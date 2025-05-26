@@ -109,28 +109,47 @@ layout = html.Div([
     dcc.Graph(id=MAP_ID, figure=map_fig, style={'height': '80vh'}, config=modeBar_config),
 
     html.Div([
-        html.Label("Select Target Type:",
-                   style={
-                       'color': '#d9d9d9',
-                       'fontSize': '20px',
-                       'fontWeight': 'bold'
-                   }),
-        dcc.Dropdown(
-            id=TARGET_TYPE_DROPDOWN_ID,
-            options=[],
-            value=None,
-            clearable=True,
-            style={
-                #styling the dropdown but to further refine well have to create an assets folder with custom css stuff: assets/custom.css
-                'backgroundColor': '#4c4c53',
-                'color': 'black'
-            }
-        )
-    ], style={'width': '40%', 'marginBottom': '20px'}),  # moved here
+        html.Div([
+            html.Label(
+                "Select Target Type:",
+                style={
+                    'color': '#d9d9d9',
+                    'fontSize': '20px',
+                    'fontWeight': 'bold'
+                }
+            ),
+            dcc.Dropdown(
+                id=TARGET_TYPE_DROPDOWN_ID,
+                options=[],
+                value=None,
+                clearable=True,
+                style={
+                    'backgroundColor': '#4c4c53',
+                    'color': 'black'
+                }
+            )
+        ], style={'width': '48%', 'display': 'inline-block', 'marginRight': '4%'}),
+        html.Div([
+            html.Label(
+                "Select the Attack Types you want to be displayed in the chart below.",
+                style={ 'color': '#d9d9d9' }
+            ),
+            dcc.Dropdown(
+                id=ATTACK_TYPE_DROPDOWN_ID,
+                value=None,
+                clearable=True,
+                multi=True,
+                style={
+                    'backgroundColor': '#4c4c53',
+                    'color': 'black'
+                }
+            )
+        ], style={'width': '48%', 'display': 'inline-block'})
+    ], style={'marginBottom': '20px'}),
 
     html.Div([
         dcc.Graph(id=BAR_CHART_ID, style={'width': '50%', 'display': 'inline-block'}, config=modeBar_config),
-        dcc.Graph(id=PIE_CHART_ID, style={'width': '50%', 'display': 'inline-block'}, config={"displayModeBar": False})
+        dcc.Graph(id=DONUT_CHART_ID, style={'width': '50%', 'display': 'inline-block'}, config={"displayModeBar": False})
     ], style={'display': 'flex'})
 ], style={
     'backgroundColor': '#3a3a3f',

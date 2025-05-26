@@ -42,13 +42,31 @@ def prepare_data(filepath):
 
     return df
 
-def calc_other_row_for_pie(data, threshold):
+def calc_other_row_for_donut(data, threshold):
     large = data[data['percentage'] >= threshold]
     small = data[data['percentage'] < threshold]
 
-    other_row = pd.DataFrame([{
-        'attacktype1_txt': 'Other',
-        'count': small['count'].sum()
-    }])
+    if small['count'].sum() > 0:
+        other_row = pd.DataFrame([{
+            'attacktype1_txt': 'Other',
+            'count': small['count'].sum()
+        }])
 
-    return pd.concat([large[['attacktype1_txt', 'count']], other_row], ignore_index=True)
+        return pd.concat([large[['attacktype1_txt', 'count']], other_row], ignore_index=True)
+    else:
+        return data
+
+def filter_target_type_and_country(df, selected_target_type, clickData):
+        filtered_df = df.copy()
+        if selected_target_type:
+            filtered_df = filtered_df[
+                filtered_df['targtype1_txt'] == selected_target_type
+            ]
+
+        if clickData:
+            country = clickData['points'][0]['location']
+            filtered_df = filtered_df[filtered_df['country_txt'] == country]
+        else:
+            country = 'Global'
+
+        return filtered_df, country
