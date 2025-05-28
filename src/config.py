@@ -1,8 +1,10 @@
 from typing import Final
 
 FOLDER_PATH: Final = "data"
-FILE_NAME: Final = "globalterrorismdb_0718dist.csv"
-FILE_PATH: Final = f"{FOLDER_PATH}/{FILE_NAME}"
+TERRORISM_FILE: Final = "globalterrorismdb_0718dist.csv"
+POPULATION_FILE: Final = "countries_with_population.csv"
+TERRORISM_FILE_PATH: Final = f"{FOLDER_PATH}/{TERRORISM_FILE}"
+POPULATION_FILE_PATH: Final = f"{FOLDER_PATH}/{POPULATION_FILE}"
 
 # Component id's
 TARGET_TYPE_DROPDOWN_ID: Final = "target-type-dropdown"

@@ -20,7 +20,7 @@ def download_data(folder_path, file_name):
         zip_ref.extractall(folder_path)
 
 
-def prepare_data(filepath):
+def prepare_terrorism_data(filepath):
     df = pd.read_csv(filepath, encoding="latin1")
 
     columns_to_keep = [
@@ -43,7 +43,6 @@ def prepare_data(filepath):
     df['casualties'] = df['nkill'] + df['nwound']
 
     return df
-
 
 def calc_other_row_for_donut(data, threshold):
     large = data[data['percentage'] >= threshold]
@@ -76,7 +75,7 @@ def filter_target_type_and_country(df, selected_target_type, clickData):
     return filtered_df, country
 
 
-def get_country_counts(df):
+def get_map_data(df):
     # Angriffe pro Land zählen
     country_counts = df.groupby(
         "country_txt").size().reset_index(name="attack_count")
@@ -95,3 +94,11 @@ def get_country_counts(df):
     )
 
     return country_counts, labels
+
+
+def get_dropdown_options(filtered_df, field):
+    available_types = filtered_df[field].dropna().unique()
+
+    options = [{'label': t, 'value': t} for t in sorted(available_types)]
+
+    return options

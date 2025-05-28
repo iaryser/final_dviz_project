@@ -1,13 +1,13 @@
 from dash import Input, Output
-from src.data_loader import prepare_data, calc_other_row_for_donut, filter_target_type_and_country
-from src.config import FILE_PATH, TARGET_TYPE_DROPDOWN_ID, BAR_CHART_ID, DONUT_CHART_ID, MAP_ID, ATTACK_TYPE_DROPDOWN_ID
-from src.data_loader import prepare_data, get_country_counts
+from src.data_loader import prepare_terrorism_data, calc_other_row_for_donut, filter_target_type_and_country, get_dropdown_options
+from src.config import TERRORISM_FILE_PATH, TARGET_TYPE_DROPDOWN_ID, BAR_CHART_ID, DONUT_CHART_ID, MAP_ID, ATTACK_TYPE_DROPDOWN_ID
+from src.data_loader import prepare_terrorism_data, get_map_data
 from src.charts.map_plot import create_map
 from src.charts.bar_plot import create_bar_fig
 from src.charts.donut_plot import create_donut_fig
 
 
-df = prepare_data(FILE_PATH)
+df = prepare_terrorism_data(TERRORISM_FILE_PATH)
 
 
 def register_callbacks(app):
@@ -18,7 +18,7 @@ def register_callbacks(app):
     def update_map(clickData):
         highlight_country = clickData['points'][0]['location'] if clickData else None
 
-        country_counts, labels = get_country_counts(df)
+        country_counts, labels = get_map_data(df)
 
         map_fig = create_map(country_counts, labels, highlight_country)
 
@@ -84,11 +84,3 @@ def register_callbacks(app):
         bar_fig = create_bar_fig(bar_data, country)
 
         return donut_fig, bar_fig
-
-
-def get_dropdown_options(filtered_df, field):
-    available_types = filtered_df[field].dropna().unique()
-
-    options = [{'label': t, 'value': t} for t in sorted(available_types)]
-
-    return options
