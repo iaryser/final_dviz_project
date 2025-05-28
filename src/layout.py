@@ -9,7 +9,7 @@ download_data(FOLDER_PATH, TERRORISM_FILE)
 # Daten vorbereiten
 df = prepare_terrorism_data(TERRORISM_FILE_PATH)
 
-country_counts, labels = get_map_data(df)
+country_counts, labels = get_map_data(df.copy())
 
 # Create map
 map_fig = create_map(country_counts, labels)

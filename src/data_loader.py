@@ -3,6 +3,7 @@ import requests
 import zipfile
 import io
 import os
+from src.config import POPULATION_FILE_PATH
 
 
 def download_data(folder_path, file_name):
@@ -76,24 +77,30 @@ def filter_target_type_and_country(df, selected_target_type, clickData):
 
 
 def get_map_data(df):
-    # Angriffe pro Land zählen
-    country_counts = df.groupby(
-        "country_txt").size().reset_index(name="attack_count")
+    pop_df = pd.read_csv(POPULATION_FILE_PATH)
+    attacks_df = df.groupby("country_txt").size().reset_index(name="attack_count")
 
-    max_attacks = country_counts['attack_count'].max()
-    bins = [0, 250, 1215, 2743, 5235, 8306, max_attacks]
+    attacks_df = attacks_df.merge(pop_df, left_on="country_txt", right_on="country", how="left")
 
-    labels = ['0-250', '251-1215', '1216-2743',
-              '2744-5235', '5236-8306', '8307+']
+    # Neue Spalte: Angriffe pro Million Einwohner
+    attacks_df["attacks_per_million"] = attacks_df["attack_count"] / (attacks_df["population"] / 1_000_000)
 
-    country_counts['attack_bin'] = pd.cut(
-        country_counts['attack_count'],
+    # Max-Wert holen (für letzte Binning-Stufe)
+    max_attacks = attacks_df["attacks_per_million"].max()
+
+    # Binning definieren (angepasst auf per-million Maßstab)
+    bins = [0, 5, 15, 30, 60, 120, max_attacks]
+    labels = ['0–5', '6–15', '16–30', '31–60', '61–120', f'121+']
+
+    # Angriffe in Kategorien einteilen
+    attacks_df["attack_bin"] = pd.cut(
+        attacks_df["attacks_per_million"],
         bins=bins,
         labels=labels,
         include_lowest=True
     )
 
-    return country_counts, labels
+    return attacks_df, labels
 
 
 def get_dropdown_options(filtered_df, field):

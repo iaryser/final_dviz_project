@@ -58,7 +58,7 @@ def create_map(country_counts, labels, highlight_country=None):
 
     fig.update_layout(
         legend=dict(
-            title=dict(text="Attack Range", font=dict(size=18)),
+            title=dict(text="Attacks per Million", font=dict(size=18)),
             font=dict(size=14),
             itemwidth=50,
             yanchor="top",

@@ -18,7 +18,7 @@ def register_callbacks(app):
     def update_map(clickData):
         highlight_country = clickData['points'][0]['location'] if clickData else None
 
-        country_counts, labels = get_map_data(df)
+        country_counts, labels = get_map_data(df.copy())
 
         map_fig = create_map(country_counts, labels, highlight_country)
 
