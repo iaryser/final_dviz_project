@@ -1,11 +1,29 @@
 from dash import Input, Output
-import plotly.express as px
 from src.data_loader import prepare_data, calc_other_row_for_donut, filter_target_type_and_country
 from src.config import FILE_PATH, TARGET_TYPE_DROPDOWN_ID, BAR_CHART_ID, DONUT_CHART_ID, MAP_ID, ATTACK_TYPE_DROPDOWN_ID
+from src.data_loader import prepare_data, get_country_counts
+from src.charts.map_plot import create_map
+from src.charts.bar_plot import create_bar_fig
+from src.charts.donut_plot import create_donut_fig
+
 
 df = prepare_data(FILE_PATH)
 
+
 def register_callbacks(app):
+    @app.callback(
+        Output(MAP_ID, 'figure'),
+        Input(MAP_ID, 'clickData')
+    )
+    def update_map(clickData):
+        highlight_country = clickData['points'][0]['location'] if clickData else None
+
+        country_counts, labels = get_country_counts(df)
+
+        map_fig = create_map(country_counts, labels, highlight_country)
+
+        return map_fig
+
     @app.callback(
         Output(TARGET_TYPE_DROPDOWN_ID, 'options'),
         Output(TARGET_TYPE_DROPDOWN_ID, 'value'),
@@ -26,9 +44,11 @@ def register_callbacks(app):
         Input(MAP_ID, 'clickData')
     )
     def update_attack_type_dropdown(selected_target_type, clickData):
-        filtered_df, _ = filter_target_type_and_country(df, selected_target_type, clickData)
+        filtered_df, _ = filter_target_type_and_country(
+            df, selected_target_type, clickData)
 
-        attack_type_dropdown_options = get_dropdown_options(filtered_df, 'attacktype1_txt')
+        attack_type_dropdown_options = get_dropdown_options(
+            filtered_df, 'attacktype1_txt')
 
         return attack_type_dropdown_options
 
@@ -40,22 +60,28 @@ def register_callbacks(app):
         Input(MAP_ID, 'clickData')
     )
     def update_charts(selected_target_type, selected_attacks, clickData):
-        filtered_df, country = filter_target_type_and_country(df, selected_target_type, clickData)
+        filtered_df, country = filter_target_type_and_country(
+            df, selected_target_type, clickData)
 
         if not selected_attacks:
             donut_data = filtered_df
         else:
-            donut_data = filtered_df[filtered_df['attacktype1_txt'].isin(selected_attacks)]
+            donut_data = filtered_df[filtered_df['attacktype1_txt'].isin(
+                selected_attacks)]
 
-        donut_data = donut_data.groupby('attacktype1_txt').size().reset_index(name='count')
-        donut_data = donut_data.sort_values(by='count', ascending=False).reset_index(drop=True)
-        donut_data['percentage'] = donut_data['count'] / donut_data['count'].sum()
+        donut_data = donut_data.groupby(
+            'attacktype1_txt').size().reset_index(name='count')
+        donut_data = donut_data.sort_values(
+            by='count', ascending=False).reset_index(drop=True)
+        donut_data['percentage'] = donut_data['count'] / \
+            donut_data['count'].sum()
         donut_data = calc_other_row_for_donut(donut_data, 0.05)
 
-        bar_data = filtered_df.groupby('iyear').size().reset_index(name='count')
+        bar_data = filtered_df.groupby(
+            'iyear').size().reset_index(name='count')
 
-        donut_fig = render_donut_fig(donut_data, country)
-        bar_fig = render_bar_fig(bar_data, country)
+        donut_fig = create_donut_fig(donut_data, country)
+        bar_fig = create_bar_fig(bar_data, country)
 
         return donut_fig, bar_fig
 
@@ -66,78 +92,3 @@ def get_dropdown_options(filtered_df, field):
     options = [{'label': t, 'value': t} for t in sorted(available_types)]
 
     return options
-
-
-def render_donut_fig(data, country):
-    # PIE: Different attack types
-    fig = px.pie(
-        data,
-        names='attacktype1_txt',
-        values='count',
-        title=f"Attack Types in {country}",
-        color_discrete_sequence=px.colors.sequential.Reds[::-1],
-        hole=0.5
-    )
-
-    fig.update_traces(
-        hovertemplate='%{label}<br>%{value:,.0f}<extra></extra>',
-        direction='clockwise'
-    )
-
-    # black background
-    fig.update_layout(
-        paper_bgcolor='#3a3a3f',
-        plot_bgcolor='#3a3a3f',
-        font_color='white',
-        title_font=dict(
-            size=18,
-            color='#d9d9d9',
-            family='Arial, sans-serif'
-        ))
-
-    fig.update_layout(
-        legend_itemclick=False,
-        legend_itemdoubleclick=False
-    )
-
-    return fig
-
-
-def render_bar_fig(data, country):
-    # BAR: Number of attacks per year
-        fig = px.bar(
-            data,
-            x='iyear',
-            y='count',
-            title=f"Attacks per Year in {country}",
-            color_discrete_sequence=["#7e1416"]
-        )
-
-        fig.update_traces(
-            hovertemplate='Year: %{label}<br>Attacks: %{value:,.0f}<extra></extra>')
-
-        fig.update_layout(
-            xaxis=dict(
-                title="Year",
-                dtick=10,
-                tickformat='d'
-            ),
-            yaxis_title="Number of Attacks",
-            paper_bgcolor='#3a3a3f',
-            plot_bgcolor='#3a3a3f',
-            font_color='white',
-            title_font=dict(
-                size=18,
-                color='#d9d9d9',
-                family='Arial, sans-serif'
-            ))
-
-        year_min = data['iyear'].min()
-        year_max = data['iyear'].max()
-
-        if year_min == year_max:
-            year_min -= 1
-            year_max += 1
-            fig.update_xaxes(range=[year_min, year_max])
-
-        return fig
