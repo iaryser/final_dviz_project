@@ -1,15 +1,9 @@
 from dash import html, dcc
-from src.data_loader import download_data, get_map_data
-from src.config import *
-from src.charts.map_plot import create_map
+from src.data_loader import download_data
+from src.config import FOLDER_PATH, TERRORISM_FILE, TARGET_TYPE_DROPDOWN_ID, ATTACK_TYPE_DROPDOWN_ID, MAP_ID, BAR_CHART_ID, DONUT_CHART_ID
 
 # Download data
 download_data(FOLDER_PATH, TERRORISM_FILE)
-
-data, labels = get_map_data()
-
-# Create map
-map_fig = create_map(data, labels)
 
 modeBar_config = {
     'displayModeBar': True,
@@ -62,8 +56,7 @@ layout = html.Div([
     }),
 
     html.Div([
-        dcc.Graph(id=MAP_ID, figure=map_fig, style={
-                  'height': '50vh'}, config=modeBar_config),
+        dcc.Graph(id=MAP_ID, style={'height': '50vh'}, config=modeBar_config),
 
         html.Div([
             dcc.Graph(id=BAR_CHART_ID, style={
