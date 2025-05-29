@@ -174,7 +174,7 @@ cython_debug/
 .pypirc
 
 # remove data from
-data/*.csv
+data/globalterrorismdb_0718dist.csv
 
 # temporary
 .python-version
