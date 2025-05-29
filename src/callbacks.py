@@ -42,14 +42,16 @@ def register_callbacks(app):
         Input(MAP_ID, 'clickData')
     )
     def update_attack_type_dropdown(selected_target_type, clickData):
+        filters = {}
+
+        if selected_target_type:
+            filters['targtype1_txt'] = selected_target_type
+
         if clickData:
             country = clickData['points'][0]['location']
-            options = get_dropdown_options(
-                'attacktype1_txt',
-                {'country_txt': country, 'targtype1_txt': selected_target_type}
-            )
-        else:
-            options = get_dropdown_options('attacktype1_txt')
+            filters['country_txt'] = country
+
+        options = get_dropdown_options('attacktype1_txt', filters)
 
         return options
 
