@@ -1,6 +1,6 @@
 from dash import html, dcc
 from src.data_loader import download_data
-from src.config import FOLDER_PATH, TERRORISM_FILE, TARGET_TYPE_DROPDOWN_ID, ATTACK_TYPE_DROPDOWN_ID, MAP_ID, BAR_CHART_ID, DONUT_CHART_ID
+from src.config import FOLDER_PATH, TERRORISM_FILE, TARGET_TYPE_DROPDOWN_ID, ATTACK_TYPE_DROPDOWN_ID, MAP_ID, BAR_CHART_ID, DONUT_CHART_ID, SELECTED_COUNTRY_STORE, COUNTRY_RESET_BUTTON_ID
 
 # Download data
 download_data(FOLDER_PATH, TERRORISM_FILE)
@@ -17,6 +17,8 @@ modeBar_config = {
 
 # Layout Dash
 layout = html.Div([
+    dcc.Store(id=SELECTED_COUNTRY_STORE, data=None),
+
     html.Div([
         html.H1("Global Terrorism Dashboard", style={'color': 'white'}),
         html.Label(
@@ -33,6 +35,9 @@ layout = html.Div([
                 'color': 'black'
             }
         ),
+
+        html.Br(),
+
         html.Label(
             "Attack Types",
             style={'color': '#d9d9d9'}
@@ -46,6 +51,16 @@ layout = html.Div([
                 'backgroundColor': '#4c4c53',
                 'color': 'black'
             }
+        ),
+
+        html.Br(),
+
+        html.Button(
+            'Reset Country',
+            id=COUNTRY_RESET_BUTTON_ID,
+            n_clicks=0,
+            style={'marginTop': '10px',
+                   'backgroundColor': '#444', 'color': 'white'}
         )
     ], style={
         'width': '20%',
@@ -67,7 +82,7 @@ layout = html.Div([
     ], style={
         'width': '75%',
         'display': 'inline-block',
-        'margin-left': '25%',
+        'marginLeft': '25%',
         'height': '100vh'
     })
 ], style={

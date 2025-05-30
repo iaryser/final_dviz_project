@@ -9,6 +9,11 @@ POPULATION_FILE_PATH: Final = f"{FOLDER_PATH}/{POPULATION_FILE}"
 # Component id's
 TARGET_TYPE_DROPDOWN_ID: Final = "target-type-dropdown"
 ATTACK_TYPE_DROPDOWN_ID: Final = "attack-type-dropdown"
+
+COUNTRY_RESET_BUTTON_ID: Final = "reset-button"
+
 DONUT_CHART_ID: Final = 'donut-chart'
 BAR_CHART_ID: Final = 'bar-chart'
 MAP_ID: Final = 'world-map'
+
+SELECTED_COUNTRY_STORE = 'selected-country-store'
