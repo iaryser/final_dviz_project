@@ -56,6 +56,10 @@ def prepare_terrorism_data(filepath):
     df.loc[df['targtype1_txt'] == 'Government (Diplomatic)', 'targtype1_txt'] = 'Government'
     df.loc[df['targtype1_txt'] == 'Government (General)', 'targtype1_txt'] = 'Government'
     
+    #Merging east and west germany together (historically accurate) <3
+    df.loc[df['country_txt'] == 'West Germany (FRG)', 'country_txt'] = 'Germany'
+    df.loc[df['country_txt'] == 'East Germany (GDR)', 'country_txt'] = 'Germany'
+    
     return df
 
 
