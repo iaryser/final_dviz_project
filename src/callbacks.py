@@ -62,6 +62,7 @@ def register_callbacks(app):
         Input(ATTACK_TYPE_DROPDOWN_ID, 'value'),
         Input(MAP_ID, 'clickData')
     )
+    
     def update_charts(selected_target_type, selected_attacks, clickData):
         filters = dict()
 
@@ -75,7 +76,7 @@ def register_callbacks(app):
             country = 'Global'
 
         donut_data = get_donut_data(selected_attacks, filters)
-        bar_data = get_bar_data(filters)
+        bar_data = get_bar_data(selected_attacks, filters)
 
         donut_fig = create_donut_fig(donut_data, country)
         bar_fig = create_bar_fig(bar_data, country)
