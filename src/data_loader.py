@@ -41,7 +41,21 @@ def prepare_terrorism_data(filepath):
 
     # Create casualties column
     df['casualties'] = df['nkill'] + df['nwound']
-
+    
+    #Unknown values get converted into Other
+    df.loc[df['attacktype1_txt'] == 'Unknown', 'attacktype1_txt'] = 'Other'
+    df.loc[df['targtype1_txt'] == 'Unknown', 'targtype1_txt'] = 'Other'
+    
+    #Grouping different hostage takings into one 
+    df.loc[df['attacktype1_txt'] == 'Hostage Taking (Kidnapping)', 'attacktype1_txt'] = 'Hostage Taking'
+    df.loc[df['attacktype1_txt'] == 'Hostage Taking (Barricade Incident)', 'attacktype1_txt'] = 'Hostage Taking'
+    df.loc[df['targtype1_txt'] == 'Hostage Taking (Kidnapping)', 'targtype1_txt'] = 'Hostage Taking'
+    df.loc[df['targtype1_txt'] == 'Hostage Taking (Barricade Incident)', 'targtype1_txt'] = 'Hostage Taking'
+    
+    #Grouping Government incidents into one
+    df.loc[df['targtype1_txt'] == 'Government (Diplomatic)', 'targtype1_txt'] = 'Government'
+    df.loc[df['targtype1_txt'] == 'Government (General)', 'targtype1_txt'] = 'Government'
+    
     return df
 
 
@@ -91,19 +105,6 @@ def get_donut_data(selected_attacks, filters: dict):
     filtered_df = filtered_df.groupby('attacktype1_txt').size().reset_index(name='count')
     filtered_df = filtered_df.sort_values(by='count', ascending=False).reset_index(drop=True)
     filtered_df['percentage'] = filtered_df['count']/filtered_df['count'].sum()
-
-    threshold = 0.05
-
-    large = filtered_df[filtered_df['percentage'] >= threshold]
-    small = filtered_df[filtered_df['percentage'] < threshold]
-
-    if small['count'].sum() > 0:
-        other_row = pd.DataFrame([{
-            'attacktype1_txt': 'Other',
-            'count': small['count'].sum()
-        }])
-
-        filtered_df = pd.concat([large[['attacktype1_txt', 'count']], other_row], ignore_index=True)
 
     return filtered_df
 
