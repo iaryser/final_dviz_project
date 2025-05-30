@@ -21,10 +21,19 @@ layout = html.Div([
 
     html.Div([
         html.H1("Global Terrorism Dashboard", style={'color': 'white'}),
+        
+        html.Br(),
+        html.Br(),
+        
         html.Label(
             "Target Type",
-            style={'color': '#d9d9d9'}
+            style={'color': 'white',
+                   'fontSize': '18px',
+                   'fontWeight': 'bold',
+                   'marginBottom': '5px',
+                   'display': 'block'}
         ),
+        
         dcc.Dropdown(
             id=TARGET_TYPE_DROPDOWN_ID,
             options=[],
@@ -32,34 +41,35 @@ layout = html.Div([
             clearable=True,
             style={
                 'backgroundColor': '#4c4c53',
-                'color': 'black'
             }
         ),
 
+        html.Br(),
         html.Br(),
 
         html.Label(
             "Attack Types",
-            style={'color': '#d9d9d9'}
+            style={'color': 'white',
+                   'fontSize': '18px',
+                   'fontWeight': 'bold',
+                   'marginBottom': '5px',
+                   'display': 'block'
+                   }
         ),
-        dcc.Dropdown(
-            id=ATTACK_TYPE_DROPDOWN_ID,
-            value=None,
-            clearable=True,
-            multi=True,
-            style={
-                'backgroundColor': '#4c4c53',
-                'color': 'black'
-            }
-        ),
+        
 
-        html.Br(),
+        dcc.Checklist(
+            id=ATTACK_TYPE_DROPDOWN_ID,
+            options=[],
+            style={'maxHeight': '300px'},
+            labelStyle={'color': '#d9d9d9'},
+        ),
 
         html.Button(
             'Reset Country',
             id=COUNTRY_RESET_BUTTON_ID,
             n_clicks=0,
-            style={'marginTop': '10px',
+            style={'marginTop': '15px',
                    'backgroundColor': '#444', 'color': 'white'}
         )
     ], style={
@@ -71,7 +81,13 @@ layout = html.Div([
     }),
 
     html.Div([
-        dcc.Graph(id=MAP_ID, style={'height': '50vh'}, config=modeBar_config),
+        html.P([
+        "Click on a country to view a timeline of total attacks and the distribution of attack types for that country.",
+        html.Br(),
+        "Use the legend on the right to filter visible countries by attacks per million."], 
+        style={'textAlign': 'center', 'color': '#d9d9d9', 'fontSize': '22px'}),
+        
+        dcc.Graph(id=MAP_ID, style={'height': '50vh', 'marginTop': '-20px'}, config=modeBar_config),
 
         html.Div([
             dcc.Graph(id=BAR_CHART_ID, style={
@@ -86,7 +102,7 @@ layout = html.Div([
         'height': '100vh'
     })
 ], style={
-    'backgroundColor': '#3a3a3f',
+    'background-color': '#3a3a3f',
     'padding': '20px',
     'minHeight': '100vh'
 })
