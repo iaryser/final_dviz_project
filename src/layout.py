@@ -1,9 +1,5 @@
 from dash import html, dcc
-from src.data_loader import download_data
-from src.config import FOLDER_PATH, TERRORISM_FILE, TARGET_TYPE_DROPDOWN_ID, ATTACK_TYPE_DROPDOWN_ID, MAP_ID, BAR_CHART_ID, DONUT_CHART_ID, SELECTED_COUNTRY_STORE, COUNTRY_RESET_BUTTON_ID
-
-# Download data
-download_data(FOLDER_PATH, TERRORISM_FILE)
+from src.config import TARGET_TYPE_DROPDOWN_ID, ATTACK_TYPE_DROPDOWN_ID, MAP_ID, BAR_CHART_ID, DONUT_CHART_ID, SELECTED_COUNTRY_STORE, COUNTRY_RESET_BUTTON_ID
 
 modeBar_config = {
     'displayModeBar': True,
@@ -21,10 +17,10 @@ layout = html.Div([
 
     html.Div([
         html.H1("Global Terrorism Dashboard", style={'color': 'white'}),
-        
+
         html.Br(),
         html.Br(),
-        
+
         html.Label(
             "Target Type",
             style={'color': 'white',
@@ -33,7 +29,7 @@ layout = html.Div([
                    'marginBottom': '5px',
                    'display': 'block'}
         ),
-        
+
         dcc.Dropdown(
             id=TARGET_TYPE_DROPDOWN_ID,
             options=[],
@@ -56,7 +52,7 @@ layout = html.Div([
                    'display': 'block'
                    }
         ),
-        
+
 
         dcc.Checklist(
             id=ATTACK_TYPE_DROPDOWN_ID,
@@ -84,9 +80,9 @@ layout = html.Div([
         html.P([
         "Click on a country to view a timeline of total attacks and the distribution of attack types for that country.",
         html.Br(),
-        "Use the legend on the right to filter visible countries by attacks per million."], 
+        "Use the legend on the right to filter visible countries by attacks per million."],
         style={'textAlign': 'center', 'color': '#d9d9d9', 'fontSize': '22px'}),
-        
+
         dcc.Graph(id=MAP_ID, style={'height': '50vh', 'marginTop': '-20px'}, config=modeBar_config),
 
         html.Div([
