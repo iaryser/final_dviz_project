@@ -22,15 +22,11 @@ layout = html.Div([
     html.Div([
         html.H1("Global Terrorism Dashboard", style={'color': 'white'}),
         
-        html.Br(),
-        html.Br(),
-        
         html.Label(
             "Target Type",
             style={'color': 'white',
                    'fontSize': '18px',
                    'fontWeight': 'bold',
-                   'marginBottom': '5px',
                    'display': 'block'}
         ),
         
@@ -41,43 +37,63 @@ layout = html.Div([
             clearable=True,
             style={
                 'backgroundColor': '#4c4c53',
+                'marginTop': '-5px'
             }
         ),
-
+        
         html.Br(),
-        html.Br(),
-
+        
         html.Label(
             "Attack Types",
             style={'color': 'white',
                    'fontSize': '18px',
                    'fontWeight': 'bold',
-                   'marginBottom': '5px',
                    'display': 'block'
                    }
         ),
         
-
         dcc.Checklist(
             id=ATTACK_TYPE_DROPDOWN_ID,
             options=[],
-            style={'maxHeight': '300px'},
-            labelStyle={'color': '#d9d9d9'},
+            style={'maxHeight': '300px',
+                   'marginTop': '-10px'},
+            labelStyle={'color': '#d9d9d9',
+                        'display': 'block',
+                        'marginBottom': '6px'},
         ),
 
         html.Button(
             'Reset Country',
             id=COUNTRY_RESET_BUTTON_ID,
             n_clicks=0,
-            style={'marginTop': '15px',
-                   'backgroundColor': '#444', 'color': 'white'}
-        )
+            style={
+                'marginTop': '15px',
+                'backgroundColor': '#4c4c53',
+                'color': 'white',
+                'border': 'none',
+                'padding': '10px 15px',
+                'borderRadius': '6px',
+                'cursor': 'pointer',
+                'boxShadow': '2px 2px 10px rgba(0,0,0,0.4)',
+                'margin-bottom': '87%'
+                }
+        ),
+        
     ], style={
         'width': '20%',
-        'height': '100vh',
+        'maxHeight': 'calc(100vh - 40px)',
         'position': 'fixed',
-        'verticalAlign': 'top',
-        'paddingRight': '2%'
+        'bottom': 'auto',
+        'padding': '25px',
+        'backgroundColor': '#2e2e33',
+        'borderRight': '1px solid #444',
+        'boxShadow': '4px 0 10px rgba(0,0,0,0.2)',
+        'borderTopRightRadius': '8px',
+        'borderBottomRightRadius': '8px',
+        'display': 'flex',
+        'flexDirection': 'column',
+        'gap': '16px',  # consistent spacing between children
+        'zIndex': '10'
     }),
 
     html.Div([
