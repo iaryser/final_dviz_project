@@ -82,10 +82,9 @@ layout = html.Div([
         'bottom': 'auto',
         'padding': '25px',
         'backgroundColor': '#2e2e33',
-        'borderRight': '1px solid #444',
-        'boxShadow': '4px 0 10px rgba(0,0,0,0.2)',
-        'borderTopRightRadius': '8px',
-        'borderBottomRightRadius': '8px',
+        'border': '2px solid #444',
+        'boxShadow': '0 0 10px 4px rgba(0,0,0,0.2)',
+        'borderRadius': '8px',
         'display': 'flex',
         'flexDirection': 'column',
         'gap': '16px',  # consistent spacing between children
