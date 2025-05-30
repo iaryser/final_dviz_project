@@ -83,8 +83,6 @@ def register_callbacks(app):
 
         if selected_target_type:
             filters['targtype1_txt'] = selected_target_type
-        if selected_attacks:
-            filters['attacktype1_txt'] = selected_attacks
         if selected_country and selected_country != 'Global':
             filters['country_txt'] = selected_country
 
