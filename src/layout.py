@@ -15,16 +15,15 @@ modeBar_config = {
 layout = html.Div([
     dcc.Store(id=SELECTED_COUNTRY_STORE, data=None),
 
+    # Sidebar
     html.Div([
         html.H1("Global Terrorism Dashboard", style={'color': 'white'}),
-        
-        html.Label(
-            "Target Type",
-            style={'color': 'white',
-                   'fontSize': '18px',
-                   'fontWeight': 'bold',
-                   'display': 'block'}
-        ),
+
+        html.Label("Target Type", style={
+            'color': 'white',
+            'fontSize': '18px',
+            'fontWeight': 'bold'
+        }),
 
         dcc.Dropdown(
             id=TARGET_TYPE_DROPDOWN_ID,
@@ -36,26 +35,23 @@ layout = html.Div([
                 'marginTop': '-5px'
             }
         ),
-        
-        html.Br(),
-        
-        html.Label(
-            "Attack Types",
-            style={'color': 'white',
-                   'fontSize': '18px',
-                   'fontWeight': 'bold',
-                   'display': 'block'
-                   }
-        ),
-        
+
+        html.Label("Attack Types", style={
+            'color': 'white',
+            'fontSize': '18px',
+            'fontWeight': 'bold',
+            'marginTop': '10px'
+        }),
+
         dcc.Checklist(
             id=ATTACK_TYPE_DROPDOWN_ID,
             options=[],
-            style={'maxHeight': '300px',
-                   'marginTop': '-10px'},
-            labelStyle={'color': '#d9d9d9',
-                        'display': 'block',
-                        'marginBottom': '6px'},
+            style={'maxHeight': '300px', 'overflowY': 'auto'},
+            labelStyle={
+                'color': '#d9d9d9',
+                'display': 'block',
+                'marginBottom': '6px'
+            }
         ),
 
         html.Button(
@@ -71,15 +67,14 @@ layout = html.Div([
                 'borderRadius': '6px',
                 'cursor': 'pointer',
                 'boxShadow': '2px 2px 10px rgba(0,0,0,0.4)',
-                'margin-bottom': '87%'
-                }
-        ),
-        
+                'marginBottom': 'auto'
+            }
+        )
     ], style={
         'width': '20%',
-        'maxHeight': 'calc(100vh - 40px)',
+        'height': '87.5vh',
+        'overflowY': 'auto',
         'position': 'fixed',
-        'bottom': 'auto',
         'padding': '25px',
         'backgroundColor': '#2e2e33',
         'border': '2px solid #444',
@@ -87,33 +82,48 @@ layout = html.Div([
         'borderRadius': '8px',
         'display': 'flex',
         'flexDirection': 'column',
-        'gap': '16px',  # consistent spacing between children
+        'gap': '16px',
         'zIndex': '10'
     }),
 
+    # Main content area
     html.Div([
         html.P([
-        "Click on a country to view a timeline of total attacks and the distribution of attack types for that country.",
-        html.Br(),
-        "Use the legend on the right to filter visible countries by attacks per million."],
-        style={'textAlign': 'center', 'color': '#d9d9d9', 'fontSize': '22px'}),
+            "Click on a country to view a timeline of total attacks and the distribution of attack types for that country.",
+            html.Br(),
+            "Use the legend on the right to filter visible countries by attacks per million."
+        ], style={
+            'textAlign': 'center',
+            'color': '#d9d9d9',
+            'fontSize': '22px',
+        }),
 
-        dcc.Graph(id=MAP_ID, style={'height': '50vh', 'marginTop': '-20px'}, config=modeBar_config),
+        dcc.Graph(
+            id=MAP_ID,
+            style={'height': '50vh', 'marginTop': '-20px'},
+            config=modeBar_config
+        ),
 
         html.Div([
-            dcc.Graph(id=BAR_CHART_ID, style={
-                'width': '50%', 'height': '50vh', 'display': 'inline-block'}, config=modeBar_config),
-            dcc.Graph(id=DONUT_CHART_ID, style={
-                'width': '50%', 'height': '50vh', 'display': 'inline-block'}, config={"displayModeBar": False})
+            dcc.Graph(
+                id=BAR_CHART_ID,
+                style={'width': '50%', 'height': '50vh'},
+                config=modeBar_config
+            ),
+            dcc.Graph(
+                id=DONUT_CHART_ID,
+                style={'width': '50%', 'height': '50vh'},
+                config={"displayModeBar": False}
+            )
         ], style={'display': 'flex'})
     ], style={
         'width': '75%',
-        'display': 'inline-block',
         'marginLeft': '25%',
-        'height': '100vh'
+        'height': '100vh',
+        'display': 'inline-block'
     })
 ], style={
-    'background-color': '#3a3a3f',
+    'backgroundColor': '#3a3a3f',
     'padding': '20px',
     'minHeight': '100vh'
 })
