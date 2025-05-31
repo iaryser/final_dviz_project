@@ -3,16 +3,23 @@ import requests
 import zipfile
 import io
 import os
-from src.config import POPULATION_FILE_PATH, TERRORISM_FILE_PATH, FOLDER_PATH, TERRORISM_FILE
 
+from src.config import (
+    POPULATION_FILE_PATH,
+    TERRORISM_FILE_PATH,
+    FOLDER_PATH,
+    TERRORISM_FILE
+)
+
+# Download and extract the terrorism dataset if not present
 def download_data():
     if os.path.exists(TERRORISM_FILE_PATH):
-        return
-
-    url = 'https://www.kaggle.com/api/v1/datasets/download/START-UMD/gtd'
+        return   # Already extracted
 
     if os.path.exists(TERRORISM_FILE):
-        return
+        return   # Already downloaded
+
+    url = 'https://www.kaggle.com/api/v1/datasets/download/START-UMD/gtd'
 
     os.makedirs(FOLDER_PATH, exist_ok=True)
 
@@ -22,12 +29,12 @@ def download_data():
     with zipfile.ZipFile(io.BytesIO(response.content)) as zip_ref:
         zip_ref.extractall(FOLDER_PATH)
 
-
+# Load and clean terrorism dataset
 def prepare_terrorism_data(filepath):
     download_data()
-
     df = pd.read_csv(filepath, encoding="latin1")
 
+    # Keep only the relevant columns
     columns_to_keep = [
         'iyear',
         'country_txt',
@@ -38,46 +45,47 @@ def prepare_terrorism_data(filepath):
         'targtype1_txt',
         'weaptype1_txt'
     ]
-
     df = df[columns_to_keep]
 
+    # Fill missing values in casualty columns
     df['nkill'] = df['nkill'].fillna(0)
     df['nwound'] = df['nwound'].fillna(0)
 
     # Create casualties column
     df['casualties'] = df['nkill'] + df['nwound']
 
-    #Unknown values get converted into Other
+    # Unknown values get converted into Other
     df.loc[df['attacktype1_txt'] == 'Unknown', 'attacktype1_txt'] = 'Other'
     df.loc[df['targtype1_txt'] == 'Unknown', 'targtype1_txt'] = 'Other'
 
-    #Grouping different hostage takings into one
+    # Grouping different hostage takings into one
     df.loc[df['attacktype1_txt'] == 'Hostage Taking (Kidnapping)', 'attacktype1_txt'] = 'Hostage Taking'
     df.loc[df['attacktype1_txt'] == 'Hostage Taking (Barricade Incident)', 'attacktype1_txt'] = 'Hostage Taking'
     df.loc[df['targtype1_txt'] == 'Hostage Taking (Kidnapping)', 'targtype1_txt'] = 'Hostage Taking'
     df.loc[df['targtype1_txt'] == 'Hostage Taking (Barricade Incident)', 'targtype1_txt'] = 'Hostage Taking'
 
-    #Grouping Government incidents into one
+    # Grouping Government incidents into one
     df.loc[df['targtype1_txt'] == 'Government (Diplomatic)', 'targtype1_txt'] = 'Government'
     df.loc[df['targtype1_txt'] == 'Government (General)', 'targtype1_txt'] = 'Government'
 
-    #Merging east and west germany together (historically accurate) <3
+    # Merging east and west germany together (historically accurate) <3
     df.loc[df['country_txt'] == 'West Germany (FRG)', 'country_txt'] = 'Germany'
     df.loc[df['country_txt'] == 'East Germany (GDR)', 'country_txt'] = 'Germany'
 
     return df
 
-
+# Generate per-country attack statistics for the map
 def get_map_data():
-    pop_df = pd.read_csv(POPULATION_FILE_PATH)
+    population_df = pd.read_csv(POPULATION_FILE_PATH)
+
     attacks_df = __TERRORISM_DF.groupby("country_txt").size().reset_index(name="attack_count")
 
-    attacks_df = attacks_df.merge(pop_df, left_on="country_txt", right_on="country", how="left")
-
+    # Merge population data to calculate attacks per million
+    attacks_df = attacks_df.merge(population_df, left_on="country_txt", right_on="country", how="left")
     attacks_df["attacks_per_million"] = attacks_df["attack_count"] / (attacks_df["population"] / 1_000_000)
 
+    # Bin the per-million values for color scale legend
     max_attacks = attacks_df["attacks_per_million"].max()
-
     bins = [0, 5, 15, 30, 60, 120, max_attacks]
     labels = ['0–5', '6–15', '16–30', '31–60', '61–120', f'121+']
 
@@ -90,7 +98,7 @@ def get_map_data():
 
     return attacks_df, labels
 
-
+# Generate dropdown/checklist options based on filtered data
 def get_filter_options(field, filters: dict = {}):
     filtered_df = __TERRORISM_DF.copy()
     for key, val in filters.items():
@@ -102,7 +110,7 @@ def get_filter_options(field, filters: dict = {}):
 
     return options
 
-
+# Prepare data for donut chart (attack type distribution)
 def get_donut_data(selected_attacks, filters: dict):
     filtered_df = __TERRORISM_DF.copy()
     for key, val in filters.items():
@@ -117,6 +125,7 @@ def get_donut_data(selected_attacks, filters: dict):
 
     return filtered_df
 
+# Prepare data for bar chart (attacks per year)
 def get_bar_data(selected_attacks, filters: dict):
     filtered_df = __TERRORISM_DF.copy()
 
@@ -130,5 +139,5 @@ def get_bar_data(selected_attacks, filters: dict):
 
     return filtered_df
 
-
+# Load dataset once at import (cached globally)
 __TERRORISM_DF = prepare_terrorism_data(TERRORISM_FILE_PATH)

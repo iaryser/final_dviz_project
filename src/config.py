@@ -16,4 +16,4 @@ DONUT_CHART_ID: Final = 'donut-chart'
 BAR_CHART_ID: Final = 'bar-chart'
 MAP_ID: Final = 'world-map'
 
-SELECTED_COUNTRY_STORE = 'selected-country-store'
+SELECTED_COUNTRY_STORE: Final = 'selected-country-store'
