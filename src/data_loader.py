@@ -91,7 +91,7 @@ def get_map_data():
     return attacks_df, labels
 
 
-def get_dropdown_options(field, filters: dict = {}):
+def get_filter_options(field, filters: dict = {}):
     filtered_df = __TERRORISM_DF.copy()
     for key, val in filters.items():
         filtered_df = filtered_df[filtered_df[key] == val]
@@ -127,8 +127,6 @@ def get_bar_data(selected_attacks, filters: dict):
         filtered_df = filtered_df[filtered_df['attacktype1_txt'].isin(selected_attacks)]
 
     filtered_df = filtered_df.groupby('iyear').size().reset_index(name='count')
-
-
 
     return filtered_df
 

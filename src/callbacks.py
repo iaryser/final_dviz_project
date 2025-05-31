@@ -1,6 +1,6 @@
 from dash import Input, Output, State, callback_context
 from dash.exceptions import PreventUpdate
-from src.data_loader import get_dropdown_options, get_map_data, get_donut_data, get_bar_data
+from src.data_loader import get_filter_options, get_map_data, get_donut_data, get_bar_data
 from src.config import TARGET_TYPE_DROPDOWN_ID, BAR_CHART_ID, DONUT_CHART_ID, MAP_ID, ATTACK_TYPE_DROPDOWN_ID, SELECTED_COUNTRY_STORE, COUNTRY_RESET_BUTTON_ID
 from src.charts.map_plot import create_map
 from src.charts.bar_plot import create_bar_fig
@@ -39,36 +39,33 @@ def register_callbacks(app):
     @app.callback(
         Output(TARGET_TYPE_DROPDOWN_ID, 'options'),
         Output(TARGET_TYPE_DROPDOWN_ID, 'value'),
-        Input(MAP_ID, 'clickData')
+        Input(SELECTED_COUNTRY_STORE, 'data')
     )
-    def update_target_type_dropdown(clickData):
-        if clickData:
-            country = clickData['points'][0]['location']
-            options = get_dropdown_options(
-                'targtype1_txt', {'country_txt': country}
+    def update_target_type_dropdown(selected_country):
+        if selected_country:
+            options = get_filter_options(
+                'targtype1_txt', {'country_txt': selected_country}
             )
         else:
-            options = get_dropdown_options('targtype1_txt')
+            options = get_filter_options('targtype1_txt')
 
         return options, None
 
     @app.callback(
         Output(ATTACK_TYPE_DROPDOWN_ID, 'options'),
         Input(TARGET_TYPE_DROPDOWN_ID, 'value'),
-        Input(MAP_ID, 'clickData')
+        Input(SELECTED_COUNTRY_STORE, 'data')
     )
-    def update_attack_type_dropdown(selected_target_type, clickData):
+    def update_attack_type_select(selected_target_type, selected_country):
         filters = {}
 
         if selected_target_type:
             filters['targtype1_txt'] = selected_target_type
 
-        if clickData:
-            country = clickData['points'][0]['location']
-            filters['country_txt'] = country
+        if selected_country:
+            filters['country_txt'] = selected_country
 
-        options = get_dropdown_options('attacktype1_txt', filters)
-
+        options = get_filter_options('attacktype1_txt', filters)
         return options
 
     @app.callback(
@@ -77,7 +74,7 @@ def register_callbacks(app):
     Input(TARGET_TYPE_DROPDOWN_ID, 'value'),
     Input(ATTACK_TYPE_DROPDOWN_ID, 'value'),
     Input(SELECTED_COUNTRY_STORE, 'data')
-)
+    )
     def update_charts(selected_target_type, selected_attacks, selected_country):
         filters = {}
 
