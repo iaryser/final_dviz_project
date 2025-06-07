@@ -43,7 +43,7 @@ pip install -r requirements.txt
 python app.py
 ```
 
-### If you habe "Make" installed
+### If you have "Make" installed
 1. Install the requirements:
 ```bash
 make install
